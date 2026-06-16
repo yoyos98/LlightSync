@@ -2,825 +2,1919 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LightSync">
-<title>LightSync — Progress</title>
+<title>LightSync Tracker</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-
-  :root {
-    --bg: #080810;
-    --surface: #0f0f1a;
-    --surface2: #16162a;
-    --border: #1e1e3a;
-    --accent-sub: #7c3aed;
-    --accent-bas: #2563eb;
-    --accent-med: #059669;
-    --accent-alt: #d97706;
-    --neon: #a78bfa;
-    --neon-glow: rgba(167,139,250,0.15);
-    --text: #e2e8f0;
-    --text-dim: #64748b;
-    --text-muted: #334155;
-    --danger: #ef4444;
-    --success: #10b981;
-    --mono: 'Space Mono', monospace;
-    --sans: 'Space Grotesk', sans-serif;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Header */
-  .header {
-    padding: 20px 20px 0;
-    position: relative;
-  }
-
-  .header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 4px;
-  }
-
-  .logo {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    color: var(--neon);
-    text-transform: uppercase;
-  }
-
-  .phase-badge {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
-
-  .header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.1;
-    margin-bottom: 6px;
-  }
-
-  .header h1 span {
-    color: var(--neon);
-  }
-
-  .header-sub {
-    font-size: 13px;
-    color: var(--text-dim);
-    font-family: var(--mono);
-  }
-
-  /* EQ visualizer signature element */
-  .eq-bar {
-    display: flex;
-    align-items: flex-end;
-    gap: 3px;
-    height: 32px;
-    margin: 16px 0 0;
-    padding: 0 20px;
-  }
-
-  .eq-bar div {
-    flex: 1;
-    border-radius: 2px 2px 0 0;
-    animation: eq-pulse 1.2s ease-in-out infinite alternate;
-  }
-
-  .eq-bar div:nth-child(1) { background: var(--accent-sub); height: 40%; animation-delay: 0s; }
-  .eq-bar div:nth-child(2) { background: var(--accent-sub); height: 70%; animation-delay: 0.1s; }
-  .eq-bar div:nth-child(3) { background: var(--accent-bas); height: 90%; animation-delay: 0.2s; }
-  .eq-bar div:nth-child(4) { background: var(--accent-bas); height: 60%; animation-delay: 0.3s; }
-  .eq-bar div:nth-child(5) { background: var(--accent-med); height: 80%; animation-delay: 0.15s; }
-  .eq-bar div:nth-child(6) { background: var(--accent-med); height: 50%; animation-delay: 0.25s; }
-  .eq-bar div:nth-child(7) { background: var(--accent-alt); height: 65%; animation-delay: 0.35s; }
-  .eq-bar div:nth-child(8) { background: var(--accent-alt); height: 35%; animation-delay: 0.4s; }
-  .eq-bar div:nth-child(9) { background: var(--accent-sub); height: 75%; animation-delay: 0.05s; }
-  .eq-bar div:nth-child(10) { background: var(--accent-bas); height: 45%; animation-delay: 0.2s; }
-  .eq-bar div:nth-child(11) { background: var(--accent-med); height: 85%; animation-delay: 0.3s; }
-  .eq-bar div:nth-child(12) { background: var(--accent-alt); height: 55%; animation-delay: 0.1s; }
-
-  @keyframes eq-pulse {
-    from { transform: scaleY(0.4); }
-    to { transform: scaleY(1); }
-  }
-
-  /* Overall progress */
-  .overall-card {
-    margin: 20px 20px 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 18px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .overall-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent-sub), var(--neon), var(--accent-bas));
-  }
-
-  .overall-label {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    font-family: var(--mono);
-    margin-bottom: 10px;
-  }
-
-  .overall-stats {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .overall-pct {
-    font-family: var(--mono);
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--neon);
-    line-height: 1;
-  }
-
-  .overall-info {
-    flex: 1;
-  }
-
-  .overall-info p {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-  }
-
-  .progress-track {
-    height: 6px;
-    background: var(--surface2);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--accent-sub), var(--neon));
-    transition: width 0.6s ease;
-  }
-
-  /* Section title */
-  .section-title {
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    font-family: var(--mono);
-    margin: 24px 20px 12px;
-  }
-
-  /* Phase cards */
-  .phases {
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .phase-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .phase-card.active {
-    border-color: var(--neon);
-    box-shadow: 0 0 20px var(--neon-glow);
-  }
-
-  .phase-card.done {
-    border-color: var(--success);
-    opacity: 0.7;
-  }
-
-  .phase-header {
-    display: flex;
-    align-items: center;
-    padding: 14px 16px;
-    cursor: pointer;
-    gap: 12px;
-  }
-
-  .phase-num {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--text-muted);
-    min-width: 28px;
-  }
-
-  .phase-info {
-    flex: 1;
-  }
-
-  .phase-name {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 2px;
-  }
-
-  .phase-period {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-family: var(--mono);
-  }
-
-  .phase-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    flex-shrink: 0;
-  }
-
-  .phase-card.active .phase-dot {
-    background: var(--neon);
-    box-shadow: 0 0 8px var(--neon);
-    animation: pulse-dot 2s infinite;
-  }
-
-  .phase-card.done .phase-dot {
-    background: var(--success);
-  }
-
-  @keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .phase-prog {
-    height: 3px;
-    background: var(--surface2);
-    margin: 0 16px 14px;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .phase-prog-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--neon);
-    transition: width 0.4s ease;
-  }
-
-  .phase-card.done .phase-prog-fill {
-    background: var(--success);
-  }
-
-  /* Weeks expandable */
-  .weeks {
-    border-top: 1px solid var(--border);
-    display: none;
-    padding: 12px 16px;
-    gap: 8px;
-    flex-direction: column;
-  }
-
-  .weeks.open {
-    display: flex;
-  }
-
-  .week-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    background: var(--surface2);
-    border-radius: 10px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-
-  .week-item.done {
-    border-color: var(--success);
-    opacity: 0.6;
-  }
-
-  .week-item.current {
-    border-color: var(--neon);
-  }
-
-  .week-check {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 1.5px solid var(--text-muted);
-    flex-shrink: 0;
-    margin-top: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    transition: all 0.2s;
-  }
-
-  .week-item.done .week-check {
-    background: var(--success);
-    border-color: var(--success);
-    color: white;
-  }
-
-  .week-item.current .week-check {
-    border-color: var(--neon);
-  }
-
-  .week-content {
-    flex: 1;
-  }
-
-  .week-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    margin-bottom: 3px;
-  }
-
-  .week-title {
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    line-height: 1.3;
-  }
-
-  .week-must {
-    font-size: 11px;
-    color: var(--neon);
-    font-family: var(--mono);
-  }
-
-  .week-item.done .week-must {
-    color: var(--success);
-  }
-
-  /* Recap section */
-  .recap-section {
-    margin: 0 20px;
-    padding-bottom: 30px;
-  }
-
-  .recap-input-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-
-  .recap-input-wrap:focus-within {
-    border-color: var(--neon);
-  }
-
-  textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    padding: 14px 16px;
-    resize: none;
-    min-height: 90px;
-  }
-
-  textarea::placeholder {
-    color: var(--text-muted);
-  }
-
-  .recap-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    border-top: 1px solid var(--border);
-  }
-
-  .recap-date {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
-  .send-btn {
-    background: var(--neon);
-    color: var(--bg);
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .send-btn:active { opacity: 0.7; }
-
-  /* Recaps history */
-  .recap-history {
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .recap-entry {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-  }
-
-  .recap-entry-date {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-
-  .recap-entry-text {
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.5;
-  }
-
-  /* Bottom nav */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding: 10px 0 20px;
-  }
-
-  .nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    padding: 4px 0;
-  }
-
-  .nav-icon {
-    font-size: 20px;
-  }
-
-  .nav-label {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-family: var(--mono);
-    letter-spacing: 0.1em;
-  }
-
-  .nav-item.active .nav-label {
-    color: var(--neon);
-  }
-
-  /* Tabs */
-  .tab { display: none; }
-  .tab.active { display: block; }
-
-  .spacer { height: 80px; }
-
-  /* Empty state */
-  .empty {
-    text-align: center;
-    padding: 24px;
-    color: var(--text-muted);
-    font-size: 13px;
-    font-family: var(--mono);
-  }
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #080810;
+  --surface: #0f0f1a;
+  --surface2: #16162a;
+  --surface3: #1c1c35;
+  --border: #1e1e3a;
+  --border2: #2a2a4a;
+  --neon: #a78bfa;
+  --neon-dim: rgba(167,139,250,0.12);
+  --neon-glow: rgba(167,139,250,0.25);
+  --cyan: #22d3ee;
+  --green: #10b981;
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --pink: #ec4899;
+  --text: #e2e8f0;
+  --text-dim: #64748b;
+  --text-muted: #2d2d4e;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Space Grotesk', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+}
+
+/* ---- NAV ---- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(8,8,16,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 20px;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: opacity 0.15s;
+}
+
+.nav-item:active { opacity: 0.6; }
+
+.nav-icon { font-size: 18px; }
+
+.nav-label {
+  font-size: 9px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  letter-spacing: 0.08em;
+}
+
+.nav-item.active .nav-label { color: var(--neon); }
+.nav-item.active .nav-icon { filter: drop-shadow(0 0 6px var(--neon)); }
+
+/* ---- TABS ---- */
+.tab { display: none; }
+.tab.active { display: block; }
+
+/* ---- HEADER ---- */
+.page-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: var(--neon);
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.page-title span { color: var(--neon); }
+
+.page-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  margin-top: 4px;
+}
+
+/* EQ bars */
+.eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 24px;
+  margin-top: 14px;
+}
+
+.eq div {
+  flex: 1;
+  border-radius: 1px 1px 0 0;
+  animation: eqp 1.4s ease-in-out infinite alternate;
+}
+
+.eq div:nth-child(1)  { background:#7c3aed; height:35%; animation-delay:0s; }
+.eq div:nth-child(2)  { background:#7c3aed; height:65%; animation-delay:.08s; }
+.eq div:nth-child(3)  { background:#2563eb; height:88%; animation-delay:.16s; }
+.eq div:nth-child(4)  { background:#2563eb; height:55%; animation-delay:.24s; }
+.eq div:nth-child(5)  { background:#059669; height:78%; animation-delay:.12s; }
+.eq div:nth-child(6)  { background:#059669; height:45%; animation-delay:.20s; }
+.eq div:nth-child(7)  { background:#d97706; height:62%; animation-delay:.28s; }
+.eq div:nth-child(8)  { background:#d97706; height:30%; animation-delay:.36s; }
+.eq div:nth-child(9)  { background:#7c3aed; height:72%; animation-delay:.04s; }
+.eq div:nth-child(10) { background:#2563eb; height:42%; animation-delay:.18s; }
+.eq div:nth-child(11) { background:#059669; height:82%; animation-delay:.26s; }
+.eq div:nth-child(12) { background:#d97706; height:50%; animation-delay:.10s; }
+.eq div:nth-child(13) { background:#7c3aed; height:68%; animation-delay:.32s; }
+.eq div:nth-child(14) { background:#2563eb; height:38%; animation-delay:.22s; }
+.eq div:nth-child(15) { background:#059669; height:92%; animation-delay:.14s; }
+.eq div:nth-child(16) { background:#d97706; height:25%; animation-delay:.40s; }
+
+@keyframes eqp {
+  from { transform: scaleY(.3); }
+  to   { transform: scaleY(1);  }
+}
+
+/* ---- CARDS ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.card-accent-top {
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-a, #7c3aed), var(--accent-b, #a78bfa));
+}
+
+/* ---- OGGI TAB ---- */
+.oggi-body { padding: 16px 20px; }
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.stat-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--neon);
+  line-height: 1;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  margin: 20px 0 10px;
+}
+
+/* Current week card */
+.week-focus {
+  background: var(--surface);
+  border: 1px solid var(--neon);
+  border-radius: 14px;
+  box-shadow: 0 0 20px var(--neon-dim);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.wf-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wf-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--neon);
+  letter-spacing: 0.2em;
+}
+
+.wf-phase {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+.wf-title {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 16px 6px;
+  line-height: 1.3;
+}
+
+.wf-must {
+  font-size: 12px;
+  color: var(--neon);
+  font-family: var(--mono);
+  padding: 0 16px;
+  margin-bottom: 2px;
+}
+
+.wf-must-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  letter-spacing: 0.15em;
+  padding: 0 16px 14px;
+}
+
+/* Daily tasks */
+.daily-tasks { margin-bottom: 16px; }
+
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.task-item.done { opacity: 0.5; border-color: var(--green); }
+.task-item:active { opacity: 0.7; }
+
+.task-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--text-dim);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  margin-top: 1px;
+  transition: all 0.15s;
+}
+
+.task-item.done .task-check {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.task-content { flex: 1; }
+
+.task-title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.task-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.task-type {
+  font-size: 9px;
+  font-family: var(--mono);
+  letter-spacing: 0.15em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.type-must { background: rgba(167,139,250,0.15); color: var(--neon); }
+.type-code { background: rgba(34,211,238,0.15); color: var(--cyan); }
+.type-learn { background: rgba(16,185,129,0.15); color: var(--green); }
+.type-plan { background: rgba(245,158,11,0.15); color: var(--orange); }
+
+/* Warning box */
+.warning-box {
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.warning-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+.warning-text { font-size: 12px; color: var(--orange); line-height: 1.5; }
+
+/* ---- ROADMAP TAB ---- */
+.roadmap-body { padding: 16px 20px; }
+
+.phase-block {
+  margin-bottom: 14px;
+}
+
+.phase-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.15s;
+}
+
+.phase-header-row.active-phase { border-color: var(--neon); }
+.phase-header-row.done-phase { border-color: var(--green); opacity: 0.7; }
+
+.phase-num-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon);
+  flex-shrink: 0;
+}
+
+.phase-info-col { flex: 1; }
+
+.phase-info-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.phase-info-period {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+.phase-pct {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.phase-pct.active { color: var(--neon); }
+
+.phase-weeks-list {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  padding-left: 8px;
+}
+
+.phase-weeks-list.open { display: flex; }
+
+.week-row {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.week-row.done-week { border-color: var(--green); opacity: 0.6; }
+.week-row.current-week { border-color: var(--neon); }
+
+.week-row-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.week-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.week-row.done-week .week-circle { background: var(--green); border-color: var(--green); color: white; }
+.week-row.current-week .week-circle { border-color: var(--neon); }
+
+.week-row-info { flex: 1; }
+
+.week-row-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  margin-bottom: 2px;
+}
+
+.week-row-title {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.week-detail {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 10px 12px 12px;
+}
+
+.week-detail.open { display: block; }
+
+.detail-section { margin-bottom: 10px; }
+
+.detail-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.detail-item {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-item:last-child { border-bottom: none; }
+
+.must-highlight {
+  background: var(--neon-dim);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--neon);
+  font-family: var(--mono);
+  line-height: 1.5;
+}
+
+.mark-done-btn {
+  width: 100%;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mark-done-btn.completed {
+  background: rgba(16,185,129,0.1);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.mark-done-btn:active { opacity: 0.7; }
+
+/* ---- SETTIMANE TAB ---- */
+.sett-body { padding: 16px 20px; }
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.wg-day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wg-day.worked { background: rgba(167,139,250,0.2); border-color: var(--neon); }
+.wg-day.today { border-color: var(--cyan); }
+.wg-day span:first-child { font-size: 7px; color: var(--text-dim); }
+.wg-day span:last-child { font-size: 11px; font-weight: 700; }
+.wg-day.worked span:last-child { color: var(--neon); }
+
+.streak-info {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.streak-box {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.streak-num {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--orange);
+  line-height: 1;
+}
+
+.streak-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.log-session-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent-sub, #7c3aed), var(--neon));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 16px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-bottom: 16px;
+  letter-spacing: 0.02em;
+}
+
+.log-session-btn:active { opacity: 0.8; }
+
+.sessions-list { display: flex; flex-direction: column; gap: 8px; }
+
+.session-entry {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.session-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.session-hours {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--neon);
+  font-weight: 700;
+}
+
+/* ---- IDEAS TAB ---- */
+.ideas-body { padding: 16px 20px; }
+
+.add-idea-btn {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px dashed var(--border2);
+  border-radius: 12px;
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.15s;
+}
+
+.add-idea-btn:active { opacity: 0.7; }
+
+.idea-form {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--neon);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.idea-form.open { display: block; }
+
+.idea-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  margin-bottom: 8px;
+  resize: none;
+}
+
+.idea-input:focus { border-color: var(--neon); }
+
+.idea-status-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.status-btn {
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.status-btn.selected-too-early { background: rgba(239,68,68,0.15); border-color: var(--red); color: var(--red); }
+.status-btn.selected-future { background: rgba(245,158,11,0.15); border-color: var(--orange); color: var(--orange); }
+.status-btn.selected-ready { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }
+
+.idea-save-btn {
+  width: 100%;
+  background: var(--neon);
+  border: none;
+  border-radius: 8px;
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.ideas-filter {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filter-chip {
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.filter-chip.active { border-color: var(--neon); color: var(--neon); background: var(--neon-dim); }
+
+.idea-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+.idea-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.idea-card-text {
+  font-size: 14px;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.idea-status-tag {
+  font-size: 9px;
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+  padding: 3px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tag-too-early { background: rgba(239,68,68,0.12); color: var(--red); }
+.tag-future { background: rgba(245,158,11,0.12); color: var(--orange); }
+.tag-ready { background: rgba(16,185,129,0.12); color: var(--green); }
+
+.idea-card-date {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+.idea-delete {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+  line-height: 1;
+}
+
+/* ---- RECAP TAB ---- */
+.recap-body { padding: 16px 20px; }
+
+.recap-write {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.recap-write:focus-within { border-color: var(--neon); }
+
+.recap-ta {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 14px 16px;
+  resize: none;
+  min-height: 100px;
+  line-height: 1.5;
+}
+
+.recap-ta::placeholder { color: var(--text-muted); }
+
+.recap-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.recap-date-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.recap-save-btn {
+  background: var(--neon);
+  border: none;
+  border-radius: 8px;
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.recap-save-btn:active { opacity: 0.7; }
+
+.recap-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+.recap-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.recap-entry-date {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.recap-entry-del {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.recap-entry-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ---- MODAL ---- */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: flex-end;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-sheet {
+  width: 100%;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px 40px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.modal-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 12px 14px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.modal-input:focus { border-color: var(--neon); }
+
+.modal-row { display: flex; gap: 10px; }
+
+.modal-btn {
+  flex: 1;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+
+.modal-btn:active { opacity: 0.7; }
+.modal-btn.primary { background: var(--neon); color: var(--bg); }
+.modal-btn.secondary { background: var(--surface2); color: var(--text-dim); }
+
+/* ---- MISC ---- */
+.empty-state {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-family: var(--mono);
+  line-height: 1.7;
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #7c3aed, var(--neon));
+  transition: width 0.5s ease;
+}
 </style>
 </head>
 <body>
 
-<div id="tab-progress" class="tab active">
-  <div class="header">
-    <div class="header-top">
-      <span class="logo">LightSync</span>
-      <span class="phase-badge" id="current-phase-badge">FASE 1</span>
+<!-- TAB: OGGI -->
+<div id="tab-oggi" class="tab active">
+  <div class="page-header">
+    <div class="logo-row">
+      <span class="logo">LIGHTSYNC</span>
+      <span class="badge" id="oggi-phase-badge">FASE 1</span>
     </div>
-    <h1>Il tuo<br><span>progresso</span></h1>
-    <p class="header-sub" id="today-date"></p>
+    <div class="page-title">Oggi, <span id="oggi-dayname">lunedì</span></div>
+    <div class="page-sub" id="oggi-fulldate"></div>
+    <div class="eq">
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+    </div>
   </div>
 
-  <div class="eq-bar">
-    <div></div><div></div><div></div><div></div>
-    <div></div><div></div><div></div><div></div>
-    <div></div><div></div><div></div><div></div>
-  </div>
-
-  <div class="overall-card">
-    <div class="overall-label">Progresso totale</div>
-    <div class="overall-stats">
-      <div class="overall-pct" id="overall-pct">0%</div>
-      <div class="overall-info">
-        <p id="overall-desc">0 settimane completate su 42</p>
-        <div class="progress-track">
-          <div class="progress-fill" id="overall-bar" style="width:0%"></div>
+  <div class="oggi-body">
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-label">PROGRESSO</div>
+        <div class="stat-value" id="oggi-pct">0%</div>
+        <div class="stat-sub" id="oggi-weeks-done">0 / 42 sett.</div>
+        <div class="progress-bar" style="margin-top:8px">
+          <div class="progress-bar-fill" id="oggi-pbar" style="width:0%"></div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="section-title">Fasi del progetto</div>
-
-  <div class="phases" id="phases-container"></div>
-
-  <div class="spacer"></div>
-</div>
-
-<div id="tab-recap" class="tab">
-  <div class="header">
-    <div class="header-top">
-      <span class="logo">LightSync</span>
-    </div>
-    <h1>Recap <span>sessioni</span></h1>
-    <p class="header-sub">Scrivimi cosa hai fatto, ti do feedback</p>
-  </div>
-
-  <div class="eq-bar">
-    <div></div><div></div><div></div><div></div>
-    <div></div><div></div><div></div><div></div>
-    <div></div><div></div><div></div><div></div>
-  </div>
-
-  <div class="section-title">Nuova sessione</div>
-
-  <div class="recap-section">
-    <div class="recap-input-wrap">
-      <textarea id="recap-text" placeholder="Scrivi cosa hai fatto oggi, cosa ha funzionato, cosa no..."></textarea>
-      <div class="recap-footer">
-        <span class="recap-date" id="recap-date"></span>
-        <button class="send-btn" onclick="saveRecap()">Salva</button>
+      <div class="stat-box">
+        <div class="stat-label">ORE TOTALI</div>
+        <div class="stat-value" id="oggi-total-hours">0h</div>
+        <div class="stat-sub" id="oggi-sessions-count">0 sessioni</div>
       </div>
     </div>
 
-    <div class="section-title" style="margin: 20px 0 12px;">Sessioni salvate</div>
-    <div class="recap-history" id="recap-history"></div>
-  </div>
+    <div id="oggi-warning-block"></div>
 
-  <div class="spacer"></div>
+    <div class="section-label">Settimana attiva</div>
+    <div id="oggi-week-focus"></div>
+
+    <div class="section-label">Task di oggi</div>
+    <div class="daily-tasks" id="oggi-daily-tasks"></div>
+
+    <div class="section-label">Rischio discontinuità</div>
+    <div class="warning-box">
+      <div class="warning-icon">⚠️</div>
+      <div class="warning-text" id="oggi-risk-text">Calcolo in corso...</div>
+    </div>
+  </div>
 </div>
 
-<div class="bottom-nav">
-  <div class="nav-item active" onclick="switchTab('progress', this)">
-    <span class="nav-icon">📊</span>
-    <span class="nav-label">PROGRESS</span>
+<!-- TAB: ROADMAP -->
+<div id="tab-roadmap" class="tab">
+  <div class="page-header">
+    <div class="logo-row">
+      <span class="logo">LIGHTSYNC</span>
+      <span class="badge">ROADMAP</span>
+    </div>
+    <div class="page-title">Piano <span>completo</span></div>
+    <div class="page-sub">16 giu 2026 → fine 2027</div>
+    <div class="eq">
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+    </div>
   </div>
-  <div class="nav-item" onclick="switchTab('recap', this)">
+  <div class="roadmap-body" id="roadmap-body"></div>
+</div>
+
+<!-- TAB: SETTIMANE -->
+<div id="tab-sett" class="tab">
+  <div class="page-header">
+    <div class="logo-row">
+      <span class="logo">LIGHTSYNC</span>
+      <span class="badge">SESSIONI</span>
+    </div>
+    <div class="page-title">Le tue <span>sessioni</span></div>
+    <div class="page-sub">Traccia ogni giorno che lavori</div>
+    <div class="eq">
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+    </div>
+  </div>
+  <div class="sett-body">
+    <div class="streak-info">
+      <div class="streak-box">
+        <div class="streak-num" id="streak-num">0</div>
+        <div class="streak-label">STREAK SETT.</div>
+      </div>
+      <div class="streak-box">
+        <div class="streak-num" id="total-hours-big">0h</div>
+        <div class="streak-label">ORE TOTALI</div>
+      </div>
+      <div class="streak-box">
+        <div class="streak-num" id="avg-hours">0h</div>
+        <div class="streak-label">MEDIA/SETT</div>
+      </div>
+    </div>
+
+    <button class="log-session-btn" onclick="openLogModal()">＋ Registra sessione di oggi</button>
+
+    <div class="section-label">Ultime sessioni</div>
+    <div class="sessions-list" id="sessions-list"></div>
+  </div>
+</div>
+
+<!-- TAB: IDEAS -->
+<div id="tab-ideas" class="tab">
+  <div class="page-header">
+    <div class="logo-row">
+      <span class="logo">LIGHTSYNC</span>
+      <span class="badge">IDEAS LAB</span>
+    </div>
+    <div class="page-title">Le tue <span>idee</span></div>
+    <div class="page-sub">Anche quelle fuori di testa — le salviamo tutte</div>
+    <div class="eq">
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+    </div>
+  </div>
+  <div class="ideas-body">
+    <button class="add-idea-btn" onclick="toggleIdeaForm()">＋ Aggiungi nuova idea</button>
+
+    <div class="idea-form" id="idea-form">
+      <textarea class="idea-input" id="idea-text-input" rows="3" placeholder="Descrivi l'idea, anche in modo confuso..."></textarea>
+      <div class="idea-status-row">
+        <div class="status-btn" data-status="too-early" onclick="selectStatus(this)">🚫 Troppo presto</div>
+        <div class="status-btn" data-status="future" onclick="selectStatus(this)">⏳ Fase futura</div>
+        <div class="status-btn" data-status="ready" onclick="selectStatus(this)">✅ Da fare ora</div>
+      </div>
+      <button class="idea-save-btn" onclick="saveIdea()">Salva idea</button>
+    </div>
+
+    <div class="ideas-filter">
+      <div class="filter-chip active" data-filter="all" onclick="filterIdeas(this)">Tutte</div>
+      <div class="filter-chip" data-filter="too-early" onclick="filterIdeas(this)">🚫 Troppo presto</div>
+      <div class="filter-chip" data-filter="future" onclick="filterIdeas(this)">⏳ Future</div>
+      <div class="filter-chip" data-filter="ready" onclick="filterIdeas(this)">✅ Pronte</div>
+    </div>
+
+    <div id="ideas-list"></div>
+  </div>
+</div>
+
+<!-- TAB: RECAP -->
+<div id="tab-recap" class="tab">
+  <div class="page-header">
+    <div class="logo-row">
+      <span class="logo">LIGHTSYNC</span>
+      <span class="badge">RECAP</span>
+    </div>
+    <div class="page-title">Recap <span>sessioni</span></div>
+    <div class="page-sub">Scrivi, io salvo tutto</div>
+    <div class="eq">
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+      <div></div><div></div><div></div><div></div>
+    </div>
+  </div>
+  <div class="recap-body">
+    <div class="recap-write">
+      <textarea class="recap-ta" id="recap-ta" placeholder="Cosa hai fatto oggi? Cosa ha funzionato? Cosa ti ha bloccato? Scrivi liberamente..."></textarea>
+      <div class="recap-actions">
+        <span class="recap-date-label" id="recap-date-label"></span>
+        <button class="recap-save-btn" onclick="saveRecap()">Salva</button>
+      </div>
+    </div>
+    <div class="section-label" style="margin:0 0 10px">Storico</div>
+    <div id="recap-list"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="switchTab('oggi',this)">
+    <span class="nav-icon">🏠</span>
+    <span class="nav-label">OGGI</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('roadmap',this)">
+    <span class="nav-icon">🗺️</span>
+    <span class="nav-label">ROADMAP</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('sett',this)">
+    <span class="nav-icon">⏱️</span>
+    <span class="nav-label">SESSIONI</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('ideas',this)">
+    <span class="nav-icon">💡</span>
+    <span class="nav-label">IDEAS</span>
+  </div>
+  <div class="nav-item" onclick="switchTab('recap',this)">
     <span class="nav-icon">✏️</span>
     <span class="nav-label">RECAP</span>
   </div>
 </div>
 
+<!-- MODAL: log session -->
+<div class="modal-overlay" id="log-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Registra sessione</div>
+    <input class="modal-input" id="log-hours" type="number" min="0.5" max="8" step="0.5" placeholder="Ore lavorate (es. 1.5)">
+    <input class="modal-input" id="log-note" type="text" placeholder="Nota veloce (opzionale)">
+    <div class="modal-row">
+      <button class="modal-btn secondary" onclick="closeLogModal()">Annulla</button>
+      <button class="modal-btn primary" onclick="logSession()">Salva</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ---- DATI PIANO ----
+// ================================================================
+// PIANO COMPLETO
+// ================================================================
 const PLAN = [
   {
     id: 1,
     name: "Fondamenta",
     period: "Giu → Lug 2026",
-    goal: "Audio analyzer perfetto + prime luci",
+    color: "#7c3aed",
+    goal: "Audio analyzer perfetto + prime luci che reagiscono davvero",
     weeks: [
-      { id: "1-1", label: "SETT 1-2", title: "Risolvi saturazione valori bande", must: "Valori che usano range 0-1 su 3 generi diversi" },
-      { id: "1-2", label: "SETT 3-4", title: "MagicHome collegato + prima luce comandata da Python", must: "Almeno 1 colore che cambia via codice" },
-      { id: "1-3", label: "SETT 5-6", title: "Prima luce che pulsa a tempo con il beat", must: "Guardandola si capisce che segue la musica" },
+      {
+        id: "1-1", label: "SETT 1-2", title: "Risolvi saturazione valori bande",
+        goal: "I valori SUB/BAS/MED/ALT devono usare tutto il range 0-1 in modo credibile",
+        tasks: [
+          "Testa con Get Lucky e annota i valori min/max per ogni banda",
+          "Testa con una canzone rap (es. Drake) — confronta con house",
+          "Testa con una canzone pop lenta — i valori devono scendere sotto 0.5",
+          "Aggiusta DECAY_RATE finché il range è soddisfacente",
+          "Verifica che SUB sia stabile e non salti"
+        ],
+        must: "Su 3 generi diversi i valori usano almeno il range 0.2–0.9",
+        rischio: "Se salti i test multi-genere, il programma sembrerà funzionare ma si romperà su musica nuova"
+      },
+      {
+        id: "1-2", label: "SETT 3-4", title: "Ordina e collega il MagicHome",
+        goal: "Primo controller WiFi collegato al PC + LED che cambiano colore via Python",
+        tasks: [
+          "Ordina MagicHome WiFi RGB controller su Amazon (~10€)",
+          "Collega il MagicHome alla tua strip LED seguendo le istruzioni",
+          "Scaricati l'app MagicHome sul telefono e testa che funzioni",
+          "Installa libreria flux_led: pip install flux-led",
+          "Scrivi 5 righe di Python che cambiano il colore a rosso, verde, blu"
+        ],
+        must: "Da terminale Python riesci a cambiare il colore della strip LED",
+        rischio: "Senza hardware non puoi andare avanti — ordina subito"
+      },
+      {
+        id: "1-3", label: "SETT 5-6", title: "Prima luce sincronizzata alla musica",
+        goal: "La luce pulsa a tempo con il beat — primo momento magico del progetto",
+        tasks: [
+          "Collega audio_analyzer.py al controller MagicHome",
+          "Metti SUB alto = luce bianca/intensa, SUB basso = luce spenta/scura",
+          "Testa con Get Lucky — la luce deve pulsare sul beat del basso",
+          "Aggiungi BAS → colore (es. viola per bassi alti, blu per bassi medi)",
+          "Guarda 2 minuti di musica con le luci — se sembra vivo, è fatta"
+        ],
+        must: "Guardando la luce per 30 secondi si capisce che segue la musica",
+        rischio: "Non cercare di fare tutto perfetto — basta che funzioni e si veda"
+      }
     ]
   },
   {
     id: 2,
     name: "Prodotto base",
     period: "Ago → Ott 2026",
-    goal: "Modalità Ambient funzionante end-to-end",
+    color: "#2563eb",
+    goal: "Modalità Ambient completa + funziona su Mac",
     weeks: [
-      { id: "2-1", label: "SETT 7-9", title: "Colori per banda + transizioni smooth", must: "30 minuti senza crash" },
-      { id: "2-2", label: "SETT 10-12", title: "Transizione su MacBook M3", must: "Funziona identico su Mac e PC" },
-      { id: "2-3", label: "SETT 13-15", title: "Modalità Ambient completa", must: "Un amico riesce ad avviarlo senza aiuto" },
+      {
+        id: "2-1", label: "SETT 7-9", title: "Logica colori completa per modalità Ambient",
+        goal: "Ogni banda ha un colore, le transizioni sono smooth",
+        tasks: [
+          "SUB (20-60Hz) → rosso/viola intenso",
+          "BAS (60-250Hz) → blu",
+          "MED (500-2000Hz) → verde/ciano",
+          "ALT (6000-20000Hz) → bianco/giallo",
+          "Implementa transizioni smooth (interpolazione lineare tra colori)",
+          "Testa 30 minuti continui senza crash",
+          "Testa con 4 generi diversi — deve sembrare sempre sensato"
+        ],
+        must: "30 minuti di musica continua senza crash e con colori che cambiano bene",
+        rischio: "Priorità è stabilità, non perfezione dei colori"
+      },
+      {
+        id: "2-2", label: "SETT 10-12", title: "Transizione su MacBook Air M3",
+        goal: "Il progetto gira identico su Mac — zero regressioni",
+        tasks: [
+          "Copia cartella LightSync sul MacBook via AirDrop o USB",
+          "Installa Python 3.12 su Mac (brew install python o python.org)",
+          "Installa tutte le librerie: pip install sounddevice librosa numpy pyaudio flux-led",
+          "Trova il dispositivo audio corretto su Mac (diverso da Windows)",
+          "Testa audio_analyzer.py su Mac con Get Lucky",
+          "Testa il MagicHome da Mac — deve funzionare via WiFi uguale"
+        ],
+        must: "Tutto funziona su Mac identico a Windows",
+        rischio: "Su Mac il device audio potrebbe avere indice diverso — controlla subito"
+      },
+      {
+        id: "2-3", label: "SETT 13-15", title: "Modalità Ambient completa e user-friendly",
+        goal: "Un amico riesce ad avviarlo senza il tuo aiuto",
+        tasks: [
+          "Scrivi un file README.txt con istruzioni in italiano semplice",
+          "Aggiungi rilevamento automatico del dispositivo audio (no indice fisso)",
+          "Aggiungi rilevamento automatico del MagicHome sulla rete WiFi",
+          "Fai provare a un amico senza spiegargli niente — osserva dove si blocca",
+          "Risolvi i blocchi che ha trovato l'amico"
+        ],
+        must: "Un amico avvia il programma e le luci funzionano senza il tuo aiuto",
+        rischio: "Se nessuno riesce ad usarlo da solo non è un prodotto, è un prototipo"
+      }
     ]
   },
   {
     id: 3,
     name: "Prodotto completo",
     period: "Nov 2026 → Feb 2027",
-    goal: "Tutte e 3 le modalità + GUI base",
+    color: "#059669",
+    goal: "Tutte e 3 le modalità + GUI che sostituisce il terminale",
     weeks: [
-      { id: "3-1", label: "SETT 16-20", title: "Modalità Chill e Party", must: "Testata a una festa reale" },
-      { id: "3-2", label: "SETT 21-25", title: "GUI con PyQt6 — on/off, modalità, BPM visibile", must: "Usi solo GUI, mai il terminale" },
-      { id: "3-3", label: "SETT 26-28", title: "Stabilità e bug fix", must: "2 ore senza crash o problemi" },
+      {
+        id: "3-1", label: "SETT 16-18", title: "Modalità Chill",
+        goal: "Luci smooth, colori per mood, transizioni lente",
+        tasks: [
+          "Definisci palette colori Chill (es. viola/blu/ciano pastello)",
+          "Transizioni molto più lente rispetto a Ambient (3-5 secondi)",
+          "Reattività ridotta — non segue ogni beat, segue l'energia generale",
+          "Testa con musica lenta: R&B, lo-fi, jazz",
+          "Confronta visivamente con modalità Ambient — deve sembrare diversa"
+        ],
+        must: "Le due modalità sono visibilmente diverse guardandole",
+        rischio: "Non complicare troppo — anche solo velocità di transizione diversa è sufficiente"
+      },
+      {
+        id: "3-2", label: "SETT 19-22", title: "Modalità Party",
+        goal: "Drop detection attiva, colori esplosivi, strobo sul beat",
+        tasks: [
+          "Palette Party: colori saturi e forti, cambi veloci",
+          "Sul beat dei SUB: flash bianco veloce (5-10ms)",
+          "Sul drop rilevato: cambio colore totale + intensità massima per 2 secondi",
+          "Testa con house, techno, trap",
+          "Porta le luci a una piccola festa (anche 3-4 amici) e osserva le reazioni",
+          "Aggiusta basandoti su quello che vedi in live"
+        ],
+        must: "Testata in una situazione reale con persone — anche solo 3 amici",
+        rischio: "Il test in live è fondamentale — senza quello non sai se funziona davvero"
+      },
+      {
+        id: "3-3", label: "SETT 23-26", title: "GUI base con PyQt6",
+        goal: "Interfaccia grafica — niente più terminale",
+        tasks: [
+          "Installa PyQt6: pip install pyqt6",
+          "Schermata principale: on/off, selezione modalità, BPM in tempo reale",
+          "Pulsante per selezionare dispositivo audio",
+          "Pulsante per trovare il MagicHome in rete",
+          "Indicatori visuali per SUB/BAS/MED/ALT (barre animate)",
+          "Testa che tutto funzioni cliccando dalla GUI senza mai aprire il terminale"
+        ],
+        must: "Usi il programma per 30 minuti usando SOLO la GUI",
+        rischio: "Non fare la GUI bella — falla che funziona. La bellezza viene dopo"
+      },
+      {
+        id: "3-4", label: "SETT 27-30", title: "Stabilità e bug fix intensivi",
+        goal: "Il programma non crasha mai in 2 ore continue",
+        tasks: [
+          "Testa 2 ore continue con playlist varia",
+          "Testa cambio canzone veloce e ripetuto",
+          "Testa con volume molto alto e molto basso",
+          "Testa connessione/disconnessione del MagicHome durante l'uso",
+          "Risolvi tutti i crash trovati",
+          "Fai testare a 2-3 amici diversi per 1 ora ciascuno"
+        ],
+        must: "2 ore senza crash su 3 test consecutivi",
+        rischio: "Questa fase è noiosa ma è quella che separa un prototipo da un prodotto"
+      }
     ]
   },
   {
     id: 4,
-    name: "Rifinitura",
+    name: "Rifinitura & Brand",
     period: "Mar → Giu 2027",
-    goal: "App che non ti vergogni a far vedere",
+    color: "#d97706",
+    goal: "App che sembra un prodotto vero, con identità visiva",
     weeks: [
-      { id: "4-1", label: "SETT 29-33", title: "GUI bella con brand LightSync", must: "Sembra un prodotto vero" },
-      { id: "4-2", label: "SETT 34-38", title: "Supporto multi-dispositivo (MagicHome + Hue)", must: "Funziona con 2 controller diversi" },
-      { id: "4-3", label: "SETT 39-42", title: "Installer per Windows e Mac + polish finale", must: "Un estraneo lo installa senza istruzioni" },
+      {
+        id: "4-1", label: "SETT 31-34", title: "GUI professionale",
+        goal: "L'interfaccia sembra un prodotto che vale soldi",
+        tasks: [
+          "Ridisegna la GUI con i colori del brand LightSync (scuro, neon)",
+          "Integra il logo nella schermata principale",
+          "Aggiungi animazioni fluide alle barre EQ nella GUI",
+          "Schermata di benvenuto con logo",
+          "Schermata impostazioni (colori personalizzabili, sensibilità)",
+          "Fai vedere a 5 persone senza spiegare niente — chiedi: sembra professionale?"
+        ],
+        must: "5 persone su 5 dicono che sembra un'app vera",
+        rischio: "Non chiedere ad amici che ti vogliono bene — ti diranno sempre di sì"
+      },
+      {
+        id: "4-2", label: "SETT 35-38", title: "Supporto multi-dispositivo",
+        goal: "Funziona con MagicHome, Philips Hue e WLED",
+        tasks: [
+          "Aggiungi supporto Philips Hue (API ufficiale)",
+          "Aggiungi supporto WLED (protocollo E1.31)",
+          "Menu selezione dispositivo nella GUI",
+          "Testa con almeno 2 dispositivi diversi",
+          "Possibilità di usare più dispositivi contemporaneamente"
+        ],
+        must: "Funziona con almeno 2 tipi di controller diversi",
+        rischio: "Se non hai Philips Hue fisicamente, salta e fai solo WLED + MagicHome"
+      },
+      {
+        id: "4-3", label: "SETT 39-42", title: "Installer e distribuzione",
+        goal: "Un estraneo scarica e installa senza istruzioni",
+        tasks: [
+          "Crea installer Windows con PyInstaller (pip install pyinstaller)",
+          "Crea installer Mac con py2app",
+          "Testa installazione su PC pulito (senza Python installato)",
+          "Testa installazione su Mac pulito",
+          "Scrivi pagina FAQ con i problemi più comuni",
+          "Fai installare a qualcuno che non sa niente di computer"
+        ],
+        must: "Una persona che non sa usare il computer installa e avvia senza aiuto",
+        rischio: "PyInstaller può essere complicato — lascia 2 settimane extra se serve"
+      }
     ]
   },
   {
     id: 5,
-    name: "Lancio soft",
+    name: "Publishing & Lancio",
     period: "Lug → Dic 2027",
-    goal: "Prime persone reali che lo usano",
+    color: "#ec4899",
+    goal: "Prime vendite reali e presenza online",
     weeks: [
-      { id: "5-1", label: "LANCIO 1", title: "Primo video TikTok/IG con luci sincronizzate", must: "Almeno 1 video pubblicato" },
-      { id: "5-2", label: "LANCIO 2", title: "Beta gratuita per 10-20 amici", must: "Raccogliere almeno 5 feedback scritti" },
-      { id: "5-3", label: "LANCIO 3", title: "Freemium su Lemon Squeezy", must: "Pagina prodotto live e funzionante" },
+      {
+        id: "5-1", label: "LANCIO 1", title: "Setup vendite e sito",
+        goal: "Infrastruttura commerciale attiva",
+        tasks: [
+          "Crea account su Lemon Squeezy (lemon squeezy.com)",
+          "Crea i 3 prodotti: Free, Plus (20€), Pro (50€)",
+          "Configura abbonamenti: Plus (4€/mese), Pro (9€/mese)",
+          "Crea sito semplice con Carrd.co o Framer (no-code, gratis)",
+          "Pagina: home, features, pricing, download",
+          "Collegati partita IVA o verifica soglia prestazioni occasionali",
+          "Prepara Privacy Policy (genera con iubenda.com gratis)"
+        ],
+        must: "Pagina prodotto live con link acquisto funzionante",
+        rischio: "Non aspettare la perfezione — anche una pagina semplice è sufficiente"
+      },
+      {
+        id: "5-2", label: "LANCIO 2", title: "Sistema freemium e licenze",
+        goal: "Il programma sa distinguere Free da Plus da Pro",
+        tasks: [
+          "Implementa controllo licenza via Lemon Squeezy API",
+          "Free: modalità Ambient sbloccata, le altre bloccate con messaggio upgrade",
+          "Plus: Ambient + Chill sbloccate",
+          "Pro: tutto sbloccato",
+          "Testa acquisto reale con carta di test",
+          "Testa che il blocco funzioni davvero su Free"
+        ],
+        must: "Il sistema di licenze funziona end-to-end con acquisto reale",
+        rischio: "Non complicare — anche solo un codice di attivazione manuale va bene all'inizio"
+      },
+      {
+        id: "5-3", label: "LANCIO 3", title: "Contenuto marketing",
+        goal: "Primo video virale e lista beta utenti",
+        tasks: [
+          "Gira un video di 30-60 secondi a una festa con le luci sincronizzate",
+          "Monta il video: prima senza LightSync (luci statiche), poi con LightSync",
+          "Pubblica su TikTok e Instagram Reels con link in bio",
+          "Crea lista email beta con Google Forms — offri Pro gratis per feedback",
+          "Manda il form a tutti i tuoi contatti",
+          "Obiettivo: 10 beta tester reali nei primi 30 giorni"
+        ],
+        must: "Almeno 1 video pubblicato e 10 beta tester iscritti",
+        rischio: "Il video è la cosa più importante — senza dimostrazione visiva non vende nessuno"
+      },
+      {
+        id: "5-4", label: "LANCIO 4", title: "Prime vendite e feedback loop",
+        goal: "Primi soldi, primi utenti reali, miglioramento continuo",
+        tasks: [
+          "Analizza feedback beta tester — cosa non funziona?",
+          "Risolvi i 3 problemi più segnalati",
+          "Rilascia versione 1.0 pubblica",
+          "Secondo video TikTok basato sui commenti del primo",
+          "Contatta 5 DJ locali e offri Pro gratis in cambio di feedback pubblico",
+          "Obiettivo: prime 5 vendite entro fine 2027"
+        ],
+        must: "Almeno 5 persone hanno pagato per LightSync",
+        rischio: "Non scoraggiarti se vendi poco — il primo mese è sempre lento"
+      }
     ]
   }
 ];
 
-// ---- STATE ----
-let state = JSON.parse(localStorage.getItem('lightsync-state') || '{}');
-let recaps = JSON.parse(localStorage.getItem('lightsync-recaps') || '[]');
-
-function saveState() {
-  localStorage.setItem('lightsync-state', JSON.stringify(state));
+// ================================================================
+// STATE
+// ================================================================
+function loadState() {
+  return {
+    weeks: JSON.parse(localStorage.getItem('ls-weeks') || '{}'),
+    tasks: JSON.parse(localStorage.getItem('ls-tasks') || '{}'),
+    sessions: JSON.parse(localStorage.getItem('ls-sessions') || '[]'),
+    ideas: JSON.parse(localStorage.getItem('ls-ideas') || '[]'),
+    recaps: JSON.parse(localStorage.getItem('ls-recaps') || '[]'),
+  };
 }
 
-function totalWeeks() {
-  return PLAN.reduce((a, p) => a + p.weeks.length, 0);
+function saveState(key, val) {
+  localStorage.setItem('ls-' + key, JSON.stringify(val));
 }
 
-function completedWeeks() {
-  return Object.values(state).filter(v => v === 'done').length;
-}
+let S = loadState();
+let selectedIdeaStatus = 'too-early';
+let currentIdeasFilter = 'all';
 
-function overallPct() {
-  return Math.round((completedWeeks() / totalWeeks()) * 100);
-}
+// ================================================================
+// UTILS
+// ================================================================
+function totalWeeks() { return PLAN.reduce((a, p) => a + p.weeks.length, 0); }
 
-function currentPhaseId() {
+function completedWeeks() { return Object.values(S.weeks).filter(v => v).length; }
+
+function overallPct() { return Math.round((completedWeeks() / totalWeeks()) * 100); }
+
+function currentPhase() {
   for (let p of PLAN) {
-    const allDone = p.weeks.every(w => state[w.id] === 'done');
-    if (!allDone) return p.id;
+    if (!p.weeks.every(w => S.weeks[w.id])) return p;
   }
-  return PLAN[PLAN.length - 1].id;
+  return PLAN[PLAN.length - 1];
 }
 
-function phaseProgress(phase) {
-  const done = phase.weeks.filter(w => state[w.id] === 'done').length;
-  return Math.round((done / phase.weeks.length) * 100);
+function currentWeek() {
+  const p = currentPhase();
+  return p.weeks.find(w => !S.weeks[w.id]) || p.weeks[p.weeks.length - 1];
 }
 
-// ---- RENDER ----
-function render() {
+function totalHours() {
+  return S.sessions.reduce((a, s) => a + (s.hours || 0), 0);
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+}
+
+function daysSinceLastSession() {
+  if (!S.sessions.length) return 999;
+  const last = Math.max(...S.sessions.map(s => new Date(s.date).getTime()));
+  return Math.floor((Date.now() - last) / 86400000);
+}
+
+// ================================================================
+// OGGI TAB
+// ================================================================
+function renderOggi() {
   const now = new Date();
-  document.getElementById('today-date').textContent =
-    now.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  document.getElementById('recap-date').textContent =
+  const days = ['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+  document.getElementById('oggi-dayname').textContent = days[now.getDay()];
+  document.getElementById('oggi-fulldate').textContent =
     now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
 
   const pct = overallPct();
-  document.getElementById('overall-pct').textContent = pct + '%';
-  document.getElementById('overall-bar').style.width = pct + '%';
-  document.getElementById('overall-desc').textContent =
-    completedWeeks() + ' settimane completate su ' + totalWeeks();
+  document.getElementById('oggi-pct').textContent = pct + '%';
+  document.getElementById('oggi-pbar').style.width = pct + '%';
+  document.getElementById('oggi-weeks-done').textContent = completedWeeks() + ' / ' + totalWeeks() + ' sett.';
 
-  const curPhase = currentPhaseId();
-  document.getElementById('current-phase-badge').textContent = 'FASE ' + curPhase;
+  const th = totalHours();
+  document.getElementById('oggi-total-hours').textContent = th + 'h';
+  document.getElementById('oggi-sessions-count').textContent = S.sessions.length + ' sessioni';
 
-  const container = document.getElementById('phases-container');
-  container.innerHTML = '';
+  const phase = currentPhase();
+  document.getElementById('oggi-phase-badge').textContent = 'FASE ' + phase.id;
 
-  PLAN.forEach(phase => {
-    const allDone = phase.weeks.every(w => state[w.id] === 'done');
-    const isActive = phase.id === curPhase;
-    const prog = phaseProgress(phase);
+  const week = currentWeek();
+  document.getElementById('oggi-week-focus').innerHTML = `
+    <div class="week-focus">
+      <div class="wf-header">
+        <span class="wf-tag">⚡ IN CORSO</span>
+        <span class="wf-phase">Fase ${phase.id} — ${phase.name}</span>
+      </div>
+      <div class="wf-title">${week.title}</div>
+      <div class="wf-must">Must: ${week.must}</div>
+      <div class="wf-must-label">Obiettivo settimanale non negoziabile</div>
+    </div>
+  `;
 
-    const card = document.createElement('div');
-    card.className = 'phase-card' + (allDone ? ' done' : isActive ? ' active' : '');
-
-    card.innerHTML = `
-      <div class="phase-header" onclick="toggleWeeks(${phase.id})">
-        <span class="phase-num">F${phase.id}</span>
-        <div class="phase-info">
-          <div class="phase-name">${phase.name}</div>
-          <div class="phase-period">${phase.period} · ${prog}%</div>
+  const dailyTasks = document.getElementById('oggi-daily-tasks');
+  dailyTasks.innerHTML = week.tasks.map((t, i) => {
+    const key = week.id + '-t' + i;
+    const done = S.tasks[key];
+    return `
+      <div class="task-item ${done ? 'done' : ''}" onclick="toggleTask('${key}')">
+        <div class="task-check">${done ? '✓' : ''}</div>
+        <div class="task-content">
+          <div class="task-title">${t}</div>
+          ${i === 0 ? '<span class="task-type type-must">PRIORITÀ</span>' : ''}
         </div>
-        <div class="phase-dot"></div>
-      </div>
-      <div class="phase-prog">
-        <div class="phase-prog-fill" style="width:${prog}%"></div>
-      </div>
-      <div class="weeks" id="weeks-${phase.id}">
-        ${phase.weeks.map(w => {
-          const isDone = state[w.id] === 'done';
-          const isCur = !isDone && isActive;
-          return `
-            <div class="week-item ${isDone ? 'done' : isCur ? 'current' : ''}"
-                 onclick="toggleWeek('${w.id}')">
-              <div class="week-check">${isDone ? '✓' : ''}</div>
-              <div class="week-content">
-                <div class="week-label">${w.label}</div>
-                <div class="week-title">${w.title}</div>
-                <div class="week-must">Must: ${w.must}</div>
-              </div>
-            </div>
-          `;
-        }).join('')}
       </div>
     `;
+  }).join('');
 
-    container.appendChild(card);
-    if (isActive) {
-      setTimeout(() => {
-        const el = document.getElementById('weeks-' + phase.id);
-        if (el) el.classList.add('open');
-      }, 0);
-    }
-  });
+  const days_since = daysSinceLastSession();
+  let riskText = '';
+  if (days_since === 0) riskText = '✅ Hai lavorato oggi. Ottimo ritmo!';
+  else if (days_since <= 3) riskText = `Ultima sessione ${days_since} giorni fa. Nella norma, continua così.`;
+  else if (days_since <= 7) riskText = `⚠️ ${days_since} giorni senza sessione. Il contesto si sta perdendo — anche solo 30 minuti oggi fanno la differenza.`;
+  else riskText = `🚨 ${days_since} giorni di pausa. Rischio alto di perdere il filo. Rileggi gli ultimi recap prima di ricominciare.`;
 
-  renderRecaps();
+  document.getElementById('oggi-risk-text').textContent = riskText;
 }
 
-function toggleWeeks(phaseId) {
-  const el = document.getElementById('weeks-' + phaseId);
+function toggleTask(key) {
+  S.tasks[key] = !S.tasks[key];
+  saveState('tasks', S.tasks);
+  renderOggi();
+}
+
+// ================================================================
+// ROADMAP TAB
+// ================================================================
+function renderRoadmap() {
+  const body = document.getElementById('roadmap-body');
+  const phase = currentPhase();
+
+  body.innerHTML = PLAN.map(p => {
+    const allDone = p.weeks.every(w => S.weeks[w.id]);
+    const isActive = p.id === phase.id;
+    const doneCnt = p.weeks.filter(w => S.weeks[w.id]).length;
+    const pct = Math.round((doneCnt / p.weeks.length) * 100);
+
+    return `
+      <div class="phase-block">
+        <div class="phase-header-row ${allDone ? 'done-phase' : isActive ? 'active-phase' : ''}"
+             onclick="togglePhaseWeeks(${p.id})">
+          <div class="phase-num-badge">${p.id}</div>
+          <div class="phase-info-col">
+            <div class="phase-info-name">${p.name}</div>
+            <div class="phase-info-period">${p.period}</div>
+          </div>
+          <div class="phase-pct ${isActive ? 'active' : ''}">${pct}%</div>
+        </div>
+        <div class="phase-weeks-list ${isActive ? 'open' : ''}" id="pwl-${p.id}">
+          ${p.weeks.map(w => {
+            const done = S.weeks[w.id];
+            const cur = !done && isActive && w.id === currentWeek().id;
+            return `
+              <div class="week-row ${done ? 'done-week' : cur ? 'current-week' : ''}" id="wr-${w.id}">
+                <div class="week-row-header" onclick="toggleWeekDetail('${w.id}')">
+                  <div class="week-circle">${done ? '✓' : ''}</div>
+                  <div class="week-row-info">
+                    <div class="week-row-label">${w.label}${cur ? ' · IN CORSO' : ''}</div>
+                    <div class="week-row-title">${w.title}</div>
+                  </div>
+                </div>
+                <div class="week-detail ${cur ? 'open' : ''}" id="wd-${w.id}">
+                  <div class="detail-section">
+                    <div class="detail-label">Obiettivo</div>
+                    <div class="detail-item" style="color:var(--text-dim)">${w.goal}</div>
+                  </div>
+                  <div class="detail-section">
+                    <div class="detail-label">Task da fare</div>
+                    ${w.tasks.map(t => `<div class="detail-item">• ${t}</div>`).join('')}
+                  </div>
+                  <div class="detail-section">
+                    <div class="detail-label">Must settimanale</div>
+                    <div class="must-highlight">${w.must}</div>
+                  </div>
+                  <div class="detail-section">
+                    <div class="detail-label">⚠️ Rischio</div>
+                    <div class="detail-item" style="color:var(--orange)">${w.rischio}</div>
+                  </div>
+                  <button class="mark-done-btn ${done ? 'completed' : ''}"
+                          onclick="toggleWeekDone('${w.id}')">
+                    ${done ? '✓ Completata' : 'Segna come completata'}
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function togglePhaseWeeks(phaseId) {
+  const el = document.getElementById('pwl-' + phaseId);
   el.classList.toggle('open');
 }
 
-function toggleWeek(weekId) {
-  state[weekId] = state[weekId] === 'done' ? undefined : 'done';
-  saveState();
-  render();
+function toggleWeekDetail(weekId) {
+  const el = document.getElementById('wd-' + weekId);
+  el.classList.toggle('open');
 }
 
-// ---- RECAP ----
-function saveRecap() {
-  const text = document.getElementById('recap-text').value.trim();
-  if (!text) return;
-  recaps.unshift({
-    date: new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }),
-    text
-  });
-  localStorage.setItem('lightsync-recaps', JSON.stringify(recaps));
-  document.getElementById('recap-text').value = '';
-  renderRecaps();
+function toggleWeekDone(weekId) {
+  S.weeks[weekId] = !S.weeks[weekId];
+  saveState('weeks', S.weeks);
+  renderAll();
 }
 
-function renderRecaps() {
-  const container = document.getElementById('recap-history');
-  if (!recaps.length) {
-    container.innerHTML = '<div class="empty">Nessun recap ancora.<br>Scrivi la tua prima sessione!</div>';
+// ================================================================
+// SESSIONI TAB
+// ================================================================
+function renderSessioni() {
+  const th = totalHours();
+  document.getElementById('total-hours-big').textContent = th + 'h';
+
+  const weeks_with_sessions = new Set(S.sessions.map(s => {
+    const d = new Date(s.date);
+    return d.getFullYear() + '-W' + Math.ceil(d.getDate() / 7);
+  }));
+  document.getElementById('streak-num').textContent = weeks_with_sessions.size;
+
+  const avg = S.sessions.length > 0 ?
+    (th / Math.max(weeks_with_sessions.size, 1)).toFixed(1) : 0;
+  document.getElementById('avg-hours').textContent = avg + 'h';
+
+  const list = document.getElementById('sessions-list');
+  if (!S.sessions.length) {
+    list.innerHTML = '<div class="empty-state">Nessuna sessione ancora.<br>Registra la prima!</div>';
     return;
   }
-  container.innerHTML = recaps.map(r => `
+  list.innerHTML = [...S.sessions].reverse().slice(0, 20).map((s, i) => `
+    <div class="session-entry">
+      <div>
+        <div class="session-date">${formatDate(s.date)}</div>
+        ${s.note ? `<div style="font-size:12px;color:var(--text-dim);margin-top:2px">${s.note}</div>` : ''}
+      </div>
+      <div class="session-hours">${s.hours}h</div>
+    </div>
+  `).join('');
+}
+
+function openLogModal() {
+  document.getElementById('log-modal').classList.add('open');
+}
+
+function closeLogModal() {
+  document.getElementById('log-modal').classList.remove('open');
+  document.getElementById('log-hours').value = '';
+  document.getElementById('log-note').value = '';
+}
+
+function logSession() {
+  const hours = parseFloat(document.getElementById('log-hours').value);
+  if (!hours || hours <= 0) return;
+  const note = document.getElementById('log-note').value.trim();
+  S.sessions.push({ date: new Date().toISOString(), hours, note });
+  saveState('sessions', S.sessions);
+  closeLogModal();
+  renderAll();
+}
+
+// ================================================================
+// IDEAS TAB
+// ================================================================
+function toggleIdeaForm() {
+  document.getElementById('idea-form').classList.toggle('open');
+}
+
+function selectStatus(el) {
+  document.querySelectorAll('.status-btn').forEach(b => {
+    b.className = 'status-btn';
+  });
+  selectedIdeaStatus = el.dataset.status;
+  el.classList.add('selected-' + selectedIdeaStatus);
+}
+
+function saveIdea() {
+  const text = document.getElementById('idea-text-input').value.trim();
+  if (!text) return;
+  S.ideas.unshift({
+    id: Date.now(),
+    text,
+    status: selectedIdeaStatus,
+    date: new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
+  });
+  saveState('ideas', S.ideas);
+  document.getElementById('idea-text-input').value = '';
+  document.getElementById('idea-form').classList.remove('open');
+  renderIdeas();
+}
+
+function deleteIdea(id) {
+  S.ideas = S.ideas.filter(i => i.id !== id);
+  saveState('ideas', S.ideas);
+  renderIdeas();
+}
+
+function filterIdeas(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentIdeasFilter = el.dataset.filter;
+  renderIdeas();
+}
+
+const STATUS_LABELS = {
+  'too-early': '🚫 Troppo presto',
+  'future': '⏳ Fase futura',
+  'ready': '✅ Pronta'
+};
+
+function renderIdeas() {
+  const list = document.getElementById('ideas-list');
+  const filtered = currentIdeasFilter === 'all' ?
+    S.ideas : S.ideas.filter(i => i.status === currentIdeasFilter);
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state">Nessuna idea qui.<br>Aggiungila con il pulsante sopra!</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(idea => `
+    <div class="idea-card">
+      <div class="idea-card-top">
+        <div class="idea-card-text">${idea.text}</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="idea-status-tag tag-${idea.status}">${STATUS_LABELS[idea.status]}</span>
+          <button class="idea-delete" onclick="deleteIdea(${idea.id})">✕</button>
+        </div>
+      </div>
+      <div class="idea-card-date">${idea.date}</div>
+    </div>
+  `).join('');
+}
+
+// ================================================================
+// RECAP TAB
+// ================================================================
+function renderRecap() {
+  const now = new Date();
+  document.getElementById('recap-date-label').textContent =
+    now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+
+  const list = document.getElementById('recap-list');
+  if (!S.recaps.length) {
+    list.innerHTML = '<div class="empty-state">Nessun recap ancora.<br>Scrivi la prima sessione!</div>';
+    return;
+  }
+
+  list.innerHTML = S.recaps.map((r, i) => `
     <div class="recap-entry">
-      <div class="recap-entry-date">${r.date}</div>
+      <div class="recap-entry-header">
+        <span class="recap-entry-date">${r.date}</span>
+        <button class="recap-entry-del" onclick="deleteRecap(${i})">✕</button>
+      </div>
       <div class="recap-entry-text">${r.text}</div>
     </div>
   `).join('');
 }
 
-// ---- NAV ----
+function saveRecap() {
+  const text = document.getElementById('recap-ta').value.trim();
+  if (!text) return;
+  S.recaps.unshift({
+    date: new Date().toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }),
+    text
+  });
+  saveState('recaps', S.recaps);
+  document.getElementById('recap-ta').value = '';
+  renderRecap();
+}
+
+function deleteRecap(i) {
+  S.recaps.splice(i, 1);
+  saveState('recaps', S.recaps);
+  renderRecap();
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
 function switchTab(name, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
+  window.scrollTo(0, 0);
 }
 
-render();
+// ================================================================
+// INIT
+// ================================================================
+function renderAll() {
+  renderOggi();
+  renderRoadmap();
+  renderSessioni();
+  renderIdeas();
+  renderRecap();
+}
+
+// Seed idee iniziali da Claude
+if (!S.ideas.length) {
+  S.ideas = [
+    { id: 1, text: "AI per set list DJ: quando usi un'app di mixing, capisce come avviene la transizione e ottimizza le luci in anticipo. Funziona anche se cambi canzone al volo.", status: 'too-early', date: 'Giu 2026' },
+    { id: 2, text: "Controllo tridimensionale delle luci: sapere dove sono posizionate le luci nello spazio e in che direzione puntano i LED. Le luci reagiscono anche alla posizione.", status: 'too-early', date: 'Giu 2026' },
+    { id: 3, text: "Dividere le frequenze in colori separati: connettere più luci diverse, ognuna dedicata a una banda di frequenza (SUB = una luce, BAS = un'altra, ecc.)", status: 'future', date: 'Giu 2026' },
+    { id: 4, text: "Versione mobile per feste last-minute: app che si collega via Bluetooth ai LED direttamente dal telefono, senza PC.", status: 'future', date: 'Giu 2026' }
+  ];
+  saveState('ideas', S.ideas);
+}
+
+renderAll();
 </script>
 </body>
 </html>
